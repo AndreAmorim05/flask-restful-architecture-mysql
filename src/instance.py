@@ -1,26 +1,21 @@
-from distutils import errors
-import os
 from flask import Flask
 from src.models import db
 from src.ext.api import api
 from src.ext.login import login_manager
 from src.routes.error_handler import errors
 
-# loads the routes file
+# loads the routes file (recommended not remove this)
 import src.routes
 
-static_dir = os.path.abspath('src/static')
-template_dir = os.path.abspath('src/templates')
-root_path = os.path.dirname(os.path.dirname(__file__))
+# instantiate a Flask object and apply configurations on it 
+# available configs ['config.DevConfig' or 'config.ProdConfig']
+app = Flask(__name__)
+app.config.from_object('config.DevConfig')
 
-
-app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
-app.config.from_object('config')
-
-
-
+# register all blueprints
 app.register_blueprint(errors)
 
+# init all extensions
 db.init_app(app)
 api.init_app(app)
 login_manager.init_app(app)
